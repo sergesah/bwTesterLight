@@ -1,0 +1,92 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="fr" xml:lang="fr">
+	<head>
+		<title>bwTesterLight</title>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<style type="text/css" media="screen">
+		html, body { height:100%; background-color: #000000;}
+		body { margin:0; padding:0; overflow:hidden; }
+		#flashContent { width:100%; height:100%; }
+		</style>
+		<script src="https://code.jquery.com/jquery-2.1.4.min.js" type="text/javascript"></script>
+		<script type="text/javascript" src="swfobject.js"></script>
+	</head>
+	<body>
+		<script>
+			var bwTesterIsLoaded = 0;
+			var _vdk = {}; 
+			_vdk.env = {}; 
+			
+			buildBwTesterSwf();
+			setTimeout(function() {
+				testFlashPresence();
+			}, 5000);
+			
+			function testFlashPresence(){
+				if(bwTesterIsLoaded == 0){
+					alert('FLASH IS NOT INSTALLED OR IS DISABLED !');		
+				}
+			}
+			
+			function buildBwTesterSwf() {
+				
+				//swfobject.registerObject("vdBwTester", "19", "expressInstall.swf");
+				
+				var html = '<div id="videodesk-bwTester-outer" style="position:absolute;top:0px;right:0px;width:0px;height:0px;">';
+				html += '</div>';
+				$('body').append(html);
+	
+				var swfVersionStr = "11.1.0";
+				var xiSwfUrlStr = "https://cdn-videodesk.com/swf/playerProductInstall.swf";
+				var flashvars = {};
+			    
+				flashvars.from = 'player';
+				//flashvars.server_ip = '176.34.179.178';//ams ireland large
+				//flashvars.server_ip = '52.68.178.41';//ams tokyo micro
+				//flashvars.server_ip = '54.195.248.98';//ams ireland medium
+				flashvars.server_ip = '54.93.70.97';//ams frankfurt
+			    
+				var params = {};
+				params.quality = "high";
+				params.wmode = "transparent";
+				params.bgcolor = "#FFFFFF";
+				params.allowscriptaccess = "always";
+				params.allowfullscreen = "true";
+				params.wmode = "transparent";
+				var attributes = {};
+				attributes.id = "vdBwTester";
+				attributes.name = "vdBwTester";
+				attributes.align = "middle";
+				swfobject.embedSWF( "bwTesterLight.swf" , "videodesk-bwTester-outer", "500", "600", swfVersionStr, xiSwfUrlStr, flashvars, params, attributes);		
+			}
+			
+			//call by bwTesterLight
+			_vdk.env.bwTesterLoaded = function(){
+				bwTesterIsLoaded = 1;
+				bwTesterMsg("*** BW TESTER LIGHT LOADED ***");
+			}
+			
+			//call by bwTesterLight
+			_vdk.env.rtmfpResult = function(value){
+				bwTesterIsLoaded = 1;
+				bwTesterMsg("*** RTMFP AVALAIBLE : "+value+" ***");
+			}
+			
+			//call by bwTesterLight
+			_vdk.env.bwResult = function(bwValue, latence){
+				bwTesterMsg("*** bw value = "+bwValue+" kb/s and latence = "+latence+" ms ***");
+			}
+			
+			_vdk.env.userEquipment = function(listMic, listCam){
+				bwTesterMsg("list mic = "+listMic);
+				bwTesterMsg("list cam = "+listCam);
+			}
+			
+			//call by bwTesterLight
+			function bwTesterMsg(msg){
+				console.log(msg);
+			}
+			
+		</script>
+	</body>
+</html>
